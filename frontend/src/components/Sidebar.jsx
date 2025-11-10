@@ -21,7 +21,7 @@ function Sidebar({ activeKey }) {
         <Nav.Link eventKey="home" href="/home" className="d-flex align-items-center mb-1">
           <BsHouseDoor className="me-2" /> Home
         </Nav.Link>
-        <Nav.Link eventKey="configuracion" href="/configuracion" className="d-flex align-items-center mb-1">
+        <Nav.Link eventKey="configuracion" href="/configuracion/SectoresPage.jsx" className="d-flex align-items-center mb-1">
           <BsGear className="me-2" /> Configuración
         </Nav.Link>
         <Nav.Link eventKey="administracion" href="/administracion" className="d-flex align-items-center mb-1">
