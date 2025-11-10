@@ -1,0 +1,40 @@
+# ==================================
+# REGLAS GLOBALES
+# ==================================
+
+# Archivos de configuración de IDEs
+.vscode/
+.idea/
+*.suo
+*.user
+
+# Archivos de Sistema Operativo
+.DS_Store
+Thumbs.db
+
+# ==================================
+# REGLAS DEL BACKEND (.NET / C#)
+# ==================================
+
+# Ignorar carpetas de compilación
+backend/**/bin/
+backend/**/obj/
+
+# =GCP-NEXT-GENERATED-TODO
+# ==================================
+# REGLAS DEL FRONTEND (Node.js)
+# ==================================
+
+# Ignorar la carpeta de paquetes (¡la más importante!)
+frontend/node_modules/
+
+# Archivos de log
+frontend/*.log
+
+# Archivos de compilación de producción
+frontend/dist/
+frontend/build/
+
+# Archivos de entorno (deben ser locales)
+frontend/.env
+frontend/.env.local
