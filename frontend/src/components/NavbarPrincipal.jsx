@@ -4,7 +4,7 @@ import { BsBell, BsPersonCircle } from 'react-icons/bs'; // Para los iconos
 
 function NavbarPrincipal() {
   return (
-    <Navbar bg="dark" variant="dark" expand="lg">
+    <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
       <Container fluid>
         {/* Título de la aplicación */}
         <Navbar.Brand href="#">Sistema Gestion de Personal</Navbar.Brand>

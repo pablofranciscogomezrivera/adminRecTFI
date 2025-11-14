@@ -1,0 +1,40 @@
+/* ---- SIDEBAR GENERAL ---- */
+
+.sidebar-container {
+  width: 250px;
+  background-color: #f8f9fa; /* gris claro */
+  min-height: 100vh;
+  border-right: 1px solid #dee2e6;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+
+}
+
+/* enlaces del menú */
+.sidebar-link {
+  padding: 10px 14px !important;
+  border-radius: 6px !important;
+  color: #333 !important;
+  font-weight: 500;
+}
+
+/* hover */
+.sidebar-link:hover {
+  background-color: #e7efff !important;
+  color: #0d6efd !important;
+}
+
+/* activo */
+.nav-pills .nav-link.active {
+  background-color: #0d6efd !important;
+  color: white !important;
+}
+
+/* buscador */
+.sidebar-container .form-control {
+  border-right: none;
+}
+
+.sidebar-container .input-group-text {
+  border-left: none;
+  cursor: pointer;
+}

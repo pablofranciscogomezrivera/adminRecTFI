@@ -3,10 +3,12 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // 2. Importaciones de React-Bootstrap
 import { Container, Row, Col } from 'react-bootstrap';
+import '../css/App.css';
 
 // 3. Importaciones de Componentes de Layout
 import NavbarPrincipal from './components/NavbarPrincipal.jsx'; // Asegúrate de la ruta correcta
-import Sidebar from './components/Sidebar.jsx';               // Asegúrate de la ruta correcta
+import Sidebar from "./components/Sidebar.jsx";
+
 
 // 4. Importaciones de Páginas/Vistas
 import SectoresPage from './pages/configuracion/SectoresPage'; // <-- HU 1: ¡LA RUTA IMPORTANTE!
@@ -40,31 +42,28 @@ function App() {
           </Col>
           
           {/* Columna para el Contenido Principal (md={10} para 10/12 del ancho) */}
-          <Col md={10} className="p-4">
-            {/* Definición de Rutas */}
-            <Routes>
-              {/* Rutas Base */}
-              <Route path="/" element={<HomePage />} />
-              <Route path="/home" element={<HomePage />} />
+          <Col xs={12} md={10} className="p-4"> 
+            {/* Definición de Rutas */}
+            <Routes>
+              {/* Rutas Base */}
+              <Route path="/" element={<HomePage />} />
+              <Route path="/home" element={<HomePage />} />
 
-              {/* MÓDULO DE CONFIGURACIÓN */}
-              {/* RUTA DE LA HU 1: Gestión de Sectores */}
-              <Route 
-                path="/configuracion/SectoresPage.jsx" 
-                element={<SectoresPage />} 
-              />
-              
-              {/* Ruta placeholder para el menú principal de configuración */}
-              <Route path="/configuracion" element={<ConfiguracionPage />} />
+              {/* MÓDULO DE CONFIGURACIÓN */}
+              <Route 
+                path="/configuracion/SectoresPage.jsx" 
+                element={<SectoresPage />} 
+              />
+              <Route path="/configuracion" element={<ConfiguracionPage />} />
 
-              {/* MÓDULOS FUTUROS */}
-              <Route path="/administracion" element={<AdministracionPage />} />
-              <Route path="/settings" element={<SettingsPage />} />
+              {/* MÓDULOS FUTUROS */}
+              <Route path="/administracion" element={<AdministracionPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
 
-              {/* Ruta de 404 (Opcional) */}
-              <Route path="*" element={<h1>404: Página no encontrada</h1>} />
-            </Routes>
-          </Col>
+              {/* Ruta de 404 (Opcional) */}
+              <Route path="*" element={<h1>404: Página no encontrada</h1>} />
+            </Routes>
+          </Col>
 
         </Row>
       </Container>
