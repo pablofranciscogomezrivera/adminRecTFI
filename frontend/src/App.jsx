@@ -34,15 +34,11 @@ function App() {
         <Row className="g-0"> {/* g-0 elimina el margen entre columnas */}
           
           {/* Columna para el Menú Lateral (md={2} para 2/12 del ancho) */}
-          <Col md={2} className="d-none d-md-block"> 
-            {/* Aquí deberías usar react-router-dom/useLocation para determinar la clave activa.
-              Por ahora, usamos 'configuracion' como clave de ejemplo para resaltar el menú.
-            */}
+          <Col md={2} lg={2} className="d-none d-md-block"> 
             <Sidebar activeKey={window.location.pathname.startsWith('/configuracion/SectoresPage.jsx') ? 'configuracion' : 'home'} />
           </Col>
-          
           {/* Columna para el Contenido Principal (md={10} para 10/12 del ancho) */}
-          <Col xs={12} md={10} className="p-4"> 
+          <Col md={10} lg={10} sm={12} className="p-4"> 
             {/* Definición de Rutas */}
             <Routes>
               {/* Rutas Base */}
