@@ -156,34 +156,36 @@ function SectoresPage() {
 
                 <td className="text-center">
                   {/* Botón Editar */}
-                  <Button
-                    variant="outline-info"
-                    size="sm"
-                    className="me-2 d-flex align-items-center"
-                    onClick={() => handleShowEdit(sector)}
-                  >
-                    <BsPencil size={16} className="me-1" />
-                    Editar
-                  </Button>
+                  <div className="d-flex justify-content-center gap-2">
+                    <Button
+                      variant="outline-info"
+                      size="sm"
+                      className="me-2 d-flex align-items-center"
+                      onClick={() => handleShowEdit(sector)}
+                    >
+                      <BsPencil size={16} className="me-1" />
+                      Editar
+                    </Button>
 
-                  {/* Botón Activar/Desactivar */}
-                  <Button
-                    variant={
-                      sector.activo ? "outline-danger" : "outline-success"
-                    }
-                    size="sm"
-                    className="d-flex align-items-center"
-                    onClick={() => handleShowConfirm(sector)}
-                  >
-                    {sector.activo ? (
-                      <BsToggleOff size={16} />
-                    ) : (
-                      <BsToggleOn size={16} />
-                    )}
-                    <span className="ms-1">
-                      {sector.activo ? "Desactivar" : "Activar"}
-                    </span>
-                  </Button>
+                    {/* Botón Activar/Desactivar */}
+                    <Button
+                      variant={
+                        sector.activo ? "outline-danger" : "outline-success"
+                      }
+                      size="sm"
+                      className="d-flex align-items-center"
+                      onClick={() => handleShowConfirm(sector)}
+                    >
+                      {sector.activo ? (
+                        <BsToggleOff size={16} />
+                      ) : (
+                        <BsToggleOn size={16} />
+                      )}
+                      <span className="ms-1">
+                        {sector.activo ? "Desactivar" : "Activar"}
+                      </span>
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ))}
