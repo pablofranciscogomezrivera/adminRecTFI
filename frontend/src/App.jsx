@@ -5,6 +5,7 @@ import Menu from "./components/shared/Menu";
 import Footer from "./components/shared/Footer";
 import Configuracion from "./components/pages/Configuracion";
 import Sectores from "./components/pages/configuraciones/Sectores";
+import FormularioSector from "./components/pages/configuraciones/FormularioSector";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             />
             <Route path="/configuracion" element={<Configuracion></Configuracion>}/>
             <Route path="configuracion/sectores" element={<Sectores></Sectores>}/>
+            <Route path="configuracion/crear" element={<FormularioSector></FormularioSector>}/>
           </Routes>
         </main>
 
