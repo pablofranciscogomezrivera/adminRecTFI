@@ -13,3 +13,9 @@ html, body, #root {
 .main-content { 
   flex-grow: 1; 
 }
+
+img{
+   height: 350px!important;
+    object-fit: cover!important;
+    width: 100%!important;
+}
