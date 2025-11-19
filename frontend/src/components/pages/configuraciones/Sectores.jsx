@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { Table, Button } from "react-bootstrap";
 import { Link } from "react-router";
 import Swal from "sweetalert2";
+import FormularioSector from "./FormularioSector";
 
 const Sectores = () => {
   const [sectores, setSectores] = useState([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [sectorActual, setSectorActual] = useState(null);
 
   useEffect(() => {
     // Simulación de GET /api/sectores
@@ -67,14 +69,27 @@ const Sectores = () => {
       }
     });
   };
+  const handleAbrirCrear = () => {
+    setSectorActual(null); // Modo Creación
+    setMostrarFormulario(true);
+  };
+
+  const handleAbrirEditar = (sector) => {
+    setSectorActual(sector); // Modo Edición
+    setMostrarFormulario(true);
+  };
+  const cerrarFormulario = () => {
+    setMostrarFormulario(false);
+    setSectorActual(null); // Siempre limpiar el sector actual al cerrar
+  };
 
   return (
     <main className="container my-4">
       <div className="d-flex justify-content-between align-items-center">
         <h1>Administrar Sectores</h1>
-        <Link className="btn btn-primary" to={"/configuracion/crear"}>
-          Crear
-        </Link>
+        <Button variant="primary" onClick={handleAbrirCrear}>
+          Crear Sector
+        </Button>
       </div>
 
       <Table striped bordered hover className="mt-4">
@@ -97,9 +112,7 @@ const Sectores = () => {
                 <Button
                   variant="info"
                   size="sm"
-                  onClick={() => {
-                    setMostrarFormulario(true);
-                  }}
+                  onClick={() => handleAbrirEditar(sector)}
                 >
                   Editar
                 </Button>
@@ -108,6 +121,7 @@ const Sectores = () => {
                   variant="danger"
                   size="sm"
                   onClick={() => confirmarDesactivar(sector.id)}
+                  disabled={!sector.estaActivo}
                 >
                   Desactivar
                 </Button>
@@ -116,6 +130,15 @@ const Sectores = () => {
           ))}
         </tbody>
       </Table>
+      {/* Modal de Creación/Edición */}
+      <FormularioSector
+        show={mostrarFormulario} // Controla si el modal es visible
+        titulo={sectorActual ? "Editar Sector" : "Crear Nuevo Sector"}
+        sectorActual={sectorActual}
+        crearSector={crearSector}
+        editarSector={editarSector}
+        cerrar={cerrarFormulario} // Función para cerrar el modal
+      />
     </main>
   );
 };
