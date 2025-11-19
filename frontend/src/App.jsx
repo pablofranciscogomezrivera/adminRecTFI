@@ -4,19 +4,23 @@ import Administrador from "./components/pages/Administrador";
 import Menu from "./components/shared/Menu";
 import Footer from "./components/shared/Footer";
 
-
 function App() {
   return (
     <BrowserRouter>
-      <Menu></Menu>
-      <Routes>
-        <Route path="/" element={<Inicio></Inicio>} />
-        <Route
-          path="/administrador"
-          element={<Administrador></Administrador>}
-        />
-      </Routes>
-      <Footer></Footer>
+      <div className="app-container">
+        <Menu></Menu>
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<Inicio></Inicio>} />
+            <Route
+              path="/administrador"
+              element={<Administrador></Administrador>}
+            />
+          </Routes>
+        </main>
+
+        <Footer></Footer>
+      </div>
     </BrowserRouter>
   );
 }
