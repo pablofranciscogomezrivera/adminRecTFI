@@ -2,7 +2,7 @@ import {Button, Form, Modal} from "react-bootstrap";
 
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 
 const FormularioSector = ({ titulo, crearSector, editarSector, sectorActual, cerrar, show }) => {
@@ -79,6 +79,22 @@ const FormularioSector = ({ titulo, crearSector, editarSector, sectorActual, cer
                 maxLength: {
                   value: 50,
                   message: "Debe tener como máximo 50 caracteres",
+                },
+              })}
+            />
+            <Form.Label>Descripcion</Form.Label>
+            <Form.Control
+              type="text"
+              isInvalid={!!errors.nombre}
+              {...register("descripcion", {
+                required: "La Descripcion es obligatorio",
+                minLength: {
+                  value: 3,
+                  message: "Debe tener al menos 3 caracteres",
+                },
+                maxLength: {
+                  value: 100,
+                  message: "Debe tener como máximo 100 caracteres",
                 },
               })}
             />

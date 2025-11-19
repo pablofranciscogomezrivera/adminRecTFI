@@ -12,9 +12,9 @@ const Sectores = () => {
   useEffect(() => {
     // Simulación de GET /api/sectores
     setSectores([
-      { id: 1, nombre: "Contabilidad", estaActivo: true },
-      { id: 2, nombre: "RRHH", estaActivo: true },
-      { id: 3, nombre: "Sistemas", estaActivo: false },
+      { id: 1, nombre: "Contabilidad", descripcion: "Para el area de contabilidad", estaActivo: true },
+      { id: 2, nombre: "RRHH",  descripcion: "Para el area de contabilidad",estaActivo: true },
+      { id: 3, nombre: "Sistemas",  descripcion: "Para el area de contabilidad",estaActivo: false },
     ]);
   }, []);
 
@@ -97,16 +97,18 @@ const Sectores = () => {
           <tr>
             <th>#</th>
             <th>Nombre</th>
+            <th>Descripcion</th>
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
         </thead>
 
         <tbody>
-          {sectores.map((sector) => (
+          {sectores.map((sector,index) => (
             <tr key={sector.id}>
-              <td>{sector.id}</td>
+              <td>{index + 1}</td>
               <td>{sector.nombre}</td>
+              <th>{sector.descripcion}</th>
               <td>{sector.estaActivo ? "Activo" : "Inactivo"}</td>
               <td className="d-flex gap-2">
                 <Button
