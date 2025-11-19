@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Table, Button } from "react-bootstrap";
 import { Link } from "react-router";
+import Swal from "sweetalert2";
 
 const Sectores = () => {
   const [sectores, setSectores] = useState([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+
   useEffect(() => {
     // Simulación de GET /api/sectores
     setSectores([
@@ -15,16 +17,13 @@ const Sectores = () => {
   }, []);
 
   const crearSector = (nuevoSector) => {
-    // le voy agregar un id
     nuevoSector.id = crypto.randomUUID();
     nuevoSector.estaActivo = true;
     setSectores([...sectores, nuevoSector]);
   };
 
   const editarSector = (idSector, sectorEditar) => {
-    // buscar el objeto dentro del array que tiene tal id, y actualizar sus valores
     const sectoresEditados = sectores.map((itemSector) => {
-      //buscar el objeto a editar
       if (itemSector.id === idSector) {
         return {
           ...itemSector,
@@ -33,7 +32,9 @@ const Sectores = () => {
       }
       return itemSector;
     });
-    setServicios(sectoresEditados);
+
+    // corregido: antes estaba setServicios()
+    setSectores(sectoresEditados);
   };
 
   const desactivarSector = (idSector) => {
@@ -45,12 +46,37 @@ const Sectores = () => {
     setSectores(listaSectores);
   };
 
+  // 👉 SweetAlert2 para confirmar desactivación
+  const confirmarDesactivar = (idSector) => {
+    Swal.fire({
+      title: "¿Desactivar sector?",
+      text: "Esta acción marcará el sector como inactivo.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, desactivar",
+      cancelButtonText: "Cancelar",
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        desactivarSector(idSector);
+        Swal.fire(
+          "Desactivado",
+          "El sector fue desactivado correctamente.",
+          "success"
+        );
+      }
+    });
+  };
+
   return (
     <main className="container my-4">
       <div className="d-flex justify-content-between align-items-center">
         <h1>Administrar Sectores</h1>
-         <Link className="btn btn-primary" to={'/configuracion/crear'}>Crear</Link>
+        <Link className="btn btn-primary" to={"/configuracion/crear"}>
+          Crear
+        </Link>
       </div>
+
       <Table striped bordered hover className="mt-4">
         <thead>
           <tr>
@@ -81,7 +107,7 @@ const Sectores = () => {
                 <Button
                   variant="danger"
                   size="sm"
-                  onClick={() => desactivarSector(sector.id)}
+                  onClick={() => confirmarDesactivar(sector.id)}
                 >
                   Desactivar
                 </Button>
