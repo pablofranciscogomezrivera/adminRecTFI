@@ -78,6 +78,30 @@ namespace BackAdminRec.Controllers
             return empleado;
         }
 
+        // POST: api/empleados/{id}/desvincular
+        [HttpPost("{id}/desvincular")]
+        public async Task<IActionResult> DesvincularEmpleado(int id, [FromBody] DesvinculacionRequest request)
+        {
+            var empleado = await _context.Empleados.FindAsync(id);
+
+            if (empleado == null)
+            {
+                return NotFound("Empleado no encontrado.");
+            }
+
+            if (request.FechaEgreso < empleado.FechaIngreso)
+            {
+                return BadRequest("La fecha de egreso no puede ser anterior a la fecha de ingreso.");
+            }
+
+            empleado.EstaActivo = false;
+            empleado.FechaEgreso = request.FechaEgreso;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { mensaje = $"El empleado {empleado.Nombre} {empleado.Apellido} ha sido desvinculado correctamente." });
+        }
+
         // PUT: api/empleados/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmpleado(int id, Empleado empleadoModificado)
@@ -148,5 +172,10 @@ namespace BackAdminRec.Controllers
         {
             return _context.Empleados.Any(e => e.Id == id);
         }
+    }
+
+    public class DesvinculacionRequest
+    {
+        public DateTime FechaEgreso { get; set; }
     }
 }
