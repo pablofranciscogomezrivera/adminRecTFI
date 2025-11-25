@@ -1,50 +1,69 @@
 import { BrowserRouter, Routes, Route } from "react-router";
+import { useState, useEffect } from "react";
+
 import Inicio from "./components/pages/Inicio";
+import Login from "./components/pages/Login";
 import Administrador from "./components/pages/Administrador";
-import Usuario from "./components/pages/Usuario"; // <-- nuevo componente para usuarios
+import Usuario from "./components/pages/Usuario"; // página para usuario normal
+// import Error404 from "./components/pages/Error404";
+
 import Menu from "./components/shared/Menu";
 import Footer from "./components/shared/Footer";
-import Login from "./components/pages/Login";
-import ProtectedRoute from "./components/routes/ProtectedRoute"; // <-- ruta protegida
+import ProtectorRutas from "./components/routes/ProtectorRutas";
 
 function App() {
+  // Leer usuario logueado desde sessionStorage
+  const usuarioSessionStorage =
+    JSON.parse(sessionStorage.getItem("usuarioKey")) || null;
+
+  const [usuarioLogueado, setUsuarioLogueado] = useState(usuarioSessionStorage);
+
+  // Guardar usuario logueado en sessionStorage cada vez que cambie
+  useEffect(() => {
+    sessionStorage.setItem("usuarioKey", JSON.stringify(usuarioLogueado));
+  }, [usuarioLogueado]);
+
   return (
     <BrowserRouter>
-      <div className="app-container">
-        <Menu />
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Inicio />} />
+      {/* Menu recibe usuarioLogueado para mostrar links según rol */}
+      <Menu usuarioLogueado={usuarioLogueado} />
 
-            {/* Ruta protegida solo para admin */}
-            <Route
-              path="/administrador"
-              element={
-                <ProtectedRoute role="admin">
-                  <Administrador />
-                </ProtectedRoute>
-              }
-            />
+      <Routes>
+        {/* Página principal */}
+        <Route path="/" element={<Inicio />} />
 
-            {/* Ruta protegida solo para usuarios normales */}
-            <Route
-              path="/usuario"
-              element={
-                <ProtectedRoute role="user">
-                  <Usuario />
-                </ProtectedRoute>
-              }
-            />
+        {/* Login recibe setUsuarioLogueado para actualizar estado */}
+        <Route
+          path="/login"
+          element={<Login setUsuarioLogueado={setUsuarioLogueado} />}
+        />
 
-            {/* Ruta de login */}
-            <Route path="/login" element={<Login />} />
+        {/* Rutas protegidas para admin */}
+        <Route
+          path="/administrador/*"
+          element={
+            <ProtectorRutas usuarioLogueado={usuarioLogueado} rolPermitido="admin" />
+          }
+        >
+          <Route index element={<Administrador />} />
+          {/* Podés agregar subrutas aquí si necesitás */}
+        </Route>
 
-            {/* Redirigir rutas desconocidas al login */}
-            <Route path="*" element={<Login />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+        {/* Ruta protegida para usuario normal */}
+        <Route
+          path="/usuario"
+          element={
+            <ProtectorRutas usuarioLogueado={usuarioLogueado} rolPermitido="user">
+              <Usuario />
+            </ProtectorRutas>
+          }
+        />
+
+        {/* Página 404
+        <Route path="*" element={<Error404 />} /> */}
+      </Routes>
+
+      <Footer />
     </BrowserRouter>
   );
 }

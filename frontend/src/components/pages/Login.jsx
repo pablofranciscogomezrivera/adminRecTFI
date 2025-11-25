@@ -2,17 +2,10 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { Form, Button, Card, Container } from "react-bootstrap";
 import Swal from "sweetalert2";
-import { loginUser } from "../api/mockAuthApi";
-import { getUserFromToken } from "../api/mockAuthApi";
+import { loginUser, getUserFromToken } from "../api/mockAuthApi";
 
-
-export default function Login() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-
+export default function Login({ setUsuarioLogueado }) {
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
@@ -20,17 +13,13 @@ export default function Login() {
       const response = await loginUser(data.email, data.password);
       localStorage.setItem("token", response.token); // Guardar JWT
 
-      const user = getUserFromToken(); // Decodificar token para obtener rol
+      const user = getUserFromToken(); // Decodificar token
+      setUsuarioLogueado(user);        // <-- actualiza estado global
 
       Swal.fire("Bienvenido!", "Sesión iniciada correctamente", "success");
 
-      // Redirigir según rol
-      if (user.role === "admin") {
-        navigate("/administrador");
-      } else {
-        navigate("/usuario");
-        console.log("Usuario no es admin, redirigir a página de usuario");
-      }
+      if (user.role === "admin") navigate("/administrador");
+      else navigate("/usuario");
     } catch (err) {
       Swal.fire("Error", err.message || "Email o contraseña incorrectos", "error");
     }
@@ -49,9 +38,7 @@ export default function Login() {
               placeholder="Ingresá tu email"
               {...register("email", { required: "Este campo es obligatorio" })}
             />
-            {errors.email && (
-              <small className="text-danger">{errors.email.message}</small>
-            )}
+            {errors.email && <small className="text-danger">{errors.email.message}</small>}
           </Form.Group>
 
           <Form.Group className="mb-3">
@@ -59,13 +46,9 @@ export default function Login() {
             <Form.Control
               type="password"
               placeholder="Ingresá tu contraseña"
-              {...register("password", {
-                required: "Este campo es obligatorio",
-              })}
+              {...register("password", { required: "Este campo es obligatorio" })}
             />
-            {errors.password && (
-              <small className="text-danger">{errors.password.message}</small>
-            )}
+            {errors.password && <small className="text-danger">{errors.password.message}</small>}
           </Form.Group>
 
           <Button type="submit" variant="success" className="w-100 no-focus-outline">
