@@ -77,5 +77,76 @@ namespace BackAdminRec.Controllers
 
             return empleado;
         }
+
+        // PUT: api/empleados/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutEmpleado(int id, Empleado empleadoModificado)
+        {
+            if (id != empleadoModificado.Id)
+            {
+                return BadRequest("El ID de la URL no coincide con el ID del cuerpo de la solicitud.");
+            }
+
+            var empleadoExistente = await _context.Empleados.FindAsync(id);
+            if (empleadoExistente == null)
+            {
+                return NotFound($"No se encontró el empleado con ID {id}.");
+            }
+
+
+            if (empleadoModificado.Sueldo < 0)
+                return BadRequest("El sueldo no puede ser negativo.");
+
+            if (!await _context.Sectores.AnyAsync(s => s.Id == empleadoModificado.SectorId))
+                return BadRequest("El Sector especificado no existe.");
+
+            if (!await _context.Roles.AnyAsync(r => r.Id == empleadoModificado.RolId))
+                return BadRequest("El Rol especificado no existe.");
+
+            if (empleadoModificado.NivelEstudioId.HasValue &&
+                !await _context.NivelesEstudio.AnyAsync(n => n.Id == empleadoModificado.NivelEstudioId))
+            {
+                return BadRequest("El Nivel de Estudio especificado no existe.");
+            }
+
+            
+            
+
+            empleadoExistente.Nombre = empleadoModificado.Nombre;
+            empleadoExistente.Apellido = empleadoModificado.Apellido;
+            empleadoExistente.Email = empleadoModificado.Email;
+            empleadoExistente.Telefono = empleadoModificado.Telefono;
+            empleadoExistente.Sueldo = empleadoModificado.Sueldo;
+
+            empleadoExistente.SectorId = empleadoModificado.SectorId;
+            empleadoExistente.RolId = empleadoModificado.RolId;
+            empleadoExistente.NivelEstudioId = empleadoModificado.NivelEstudioId;
+
+            // La fecha de egreso se maneja en la HU 5 (Desvinculación), pero si quieres permitir editarla manualmente:
+            // empleadoExistente.FechaEgreso = empleadoModificado.FechaEgreso;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!EmpleadoExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return Ok(empleadoExistente); 
+        }
+
+        private bool EmpleadoExists(int id)
+        {
+            return _context.Empleados.Any(e => e.Id == id);
+        }
     }
 }
