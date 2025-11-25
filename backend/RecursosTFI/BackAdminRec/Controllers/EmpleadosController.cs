@@ -78,7 +78,8 @@ namespace BackAdminRec.Controllers
             return empleado;
         }
 
-        // POST: api/empleados/{id}/desvincular
+        // POST: api/empleados/{id}/desvincular 
+        //hu5
         [HttpPost("{id}/desvincular")]
         public async Task<IActionResult> DesvincularEmpleado(int id, [FromBody] DesvinculacionRequest request)
         {
@@ -100,6 +101,18 @@ namespace BackAdminRec.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(new { mensaje = $"El empleado {empleado.Nombre} {empleado.Apellido} ha sido desvinculado correctamente." });
+        }
+
+        // GET: api/empleados/supervisores
+        // hu6
+        [HttpGet("supervisores")]
+        public async Task<ActionResult<IEnumerable<Empleado>>> GetCandidatosSupervisores()
+        {
+            return await _context.Empleados
+                .Include(e => e.Rol) 
+                .Where(e => e.EstaActivo &&
+                           (e.Rol.Nombre.Contains("Supervisor") || e.Rol.Nombre.Contains("Gerente")))
+                .ToListAsync();
         }
 
         // PUT: api/empleados/{id}
@@ -133,8 +146,19 @@ namespace BackAdminRec.Controllers
                 return BadRequest("El Nivel de Estudio especificado no existe.");
             }
 
-            
-            
+            if (empleadoModificado.SupervisorId.HasValue)
+            {
+                if (empleadoModificado.SupervisorId == id)
+                {
+                    return BadRequest("El empleado no puede ser su propio supervisor.");
+                }
+
+                if (!await _context.Empleados.AnyAsync(e => e.Id == empleadoModificado.SupervisorId))
+                {
+                    return BadRequest("El Supervisor especificado no existe.");
+                }
+            }
+
 
             empleadoExistente.Nombre = empleadoModificado.Nombre;
             empleadoExistente.Apellido = empleadoModificado.Apellido;
@@ -145,9 +169,7 @@ namespace BackAdminRec.Controllers
             empleadoExistente.SectorId = empleadoModificado.SectorId;
             empleadoExistente.RolId = empleadoModificado.RolId;
             empleadoExistente.NivelEstudioId = empleadoModificado.NivelEstudioId;
-
-            // La fecha de egreso se maneja en la HU 5 (Desvinculación), pero si quieres permitir editarla manualmente:
-            // empleadoExistente.FechaEgreso = empleadoModificado.FechaEgreso;
+            empleadoExistente.SupervisorId = empleadoModificado.SupervisorId;
 
             try
             {
