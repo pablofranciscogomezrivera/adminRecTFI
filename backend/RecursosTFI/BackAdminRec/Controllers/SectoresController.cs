@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore; 
 using System;
 using BackAdminRec.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BackAdminRec.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Administrador")]
     public class SectoresController : ControllerBase
     {
         private readonly AppDbContext _context; // Reemplaza AppDbContext con el nombre de tu contexto

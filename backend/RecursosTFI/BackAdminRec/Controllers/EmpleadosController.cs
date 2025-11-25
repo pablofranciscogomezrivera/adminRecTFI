@@ -2,11 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using BackAdminRec.Data;
 using BackAdminRec.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BackAdminRec.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class EmpleadosController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -18,6 +20,7 @@ namespace BackAdminRec.Controllers
 
         // POST: api/empleados
         [HttpPost]
+        [Authorize(Roles = "Administrador,RRHH")]
         public async Task<ActionResult<Empleado>> PostEmpleado(Empleado empleado)
         {
             if (empleado.Sueldo < 0)
@@ -62,6 +65,7 @@ namespace BackAdminRec.Controllers
         }
         // GET: api/empleados/{id}
         [HttpGet("{id}")]
+        [Authorize(Roles = "Administrador,RRHH,Supervisor,Gerente")]
         public async Task<ActionResult<Empleado>> GetEmpleado(int id)
         {
             var empleado = await _context.Empleados
@@ -81,6 +85,7 @@ namespace BackAdminRec.Controllers
         // GET: api/empleados
         // hu7
         [HttpGet]
+        [Authorize(Roles = "Administrador,RRHH,Supervisor,Gerente")]
         public async Task<ActionResult<IEnumerable<object>>> GetEmpleados(
             [FromQuery] string? search = null,
             [FromQuery] int? sectorId = null,
@@ -131,6 +136,7 @@ namespace BackAdminRec.Controllers
         // POST: api/empleados/{id}/desvincular 
         //hu5
         [HttpPost("{id}/desvincular")]
+        [Authorize(Roles = "Administrador,RRHH")]
         public async Task<IActionResult> DesvincularEmpleado(int id, [FromBody] DesvinculacionRequest request)
         {
             var empleado = await _context.Empleados.FindAsync(id);
@@ -156,6 +162,7 @@ namespace BackAdminRec.Controllers
         // GET: api/empleados/supervisores
         // hu6
         [HttpGet("supervisores")]
+        [Authorize(Roles = "Administrador,RRHH,Supervisor,Gerente")]
         public async Task<ActionResult<IEnumerable<Empleado>>> GetCandidatosSupervisores()
         {
             return await _context.Empleados
@@ -167,6 +174,7 @@ namespace BackAdminRec.Controllers
 
         // PUT: api/empleados/{id}
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrador,RRHH")]
         public async Task<IActionResult> PutEmpleado(int id, Empleado empleadoModificado)
         {
             if (id != empleadoModificado.Id)

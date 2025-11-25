@@ -2,11 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using BackAdminRec.Data;
 using BackAdminRec.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BackAdminRec.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Administrador")]
     public class RolesController : ControllerBase
     {
         private readonly AppDbContext _context;
