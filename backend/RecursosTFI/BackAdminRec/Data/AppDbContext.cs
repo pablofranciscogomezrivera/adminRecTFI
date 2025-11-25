@@ -12,5 +12,7 @@ namespace BackAdminRec.Data
 
         public DbSet<Sector> Sectores { get; set; }
         public DbSet<Rol> Roles { get; set; }
+        public DbSet<NivelEstudio> NivelesEstudio { get; set; }
+        public DbSet<Empleado> Empleados { get; set; }
     }
 }
