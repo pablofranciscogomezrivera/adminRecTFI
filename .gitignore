@@ -63,3 +63,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Visual Studio cache
+.vs/
+.vs
+*/.vs/
