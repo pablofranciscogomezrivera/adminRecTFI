@@ -78,6 +78,56 @@ namespace BackAdminRec.Controllers
             return empleado;
         }
 
+        // GET: api/empleados
+        // hu7
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<object>>> GetEmpleados(
+            [FromQuery] string? search = null,
+            [FromQuery] int? sectorId = null,
+            [FromQuery] int pagina = 1,
+            [FromQuery] int itemsPorPagina = 10)
+        {
+            var query = _context.Empleados
+                .Include(e => e.Sector)
+                .Include(e => e.Rol)
+                .Include(e => e.NivelEstudio)
+                .Include(e => e.Supervisor)
+                .Where(e => e.EstaActivo)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(e => e.Nombre.Contains(search) ||
+                                         e.Apellido.Contains(search) ||
+                                         e.Legajo.Contains(search));
+            }
+
+            if (sectorId.HasValue)
+            {
+                query = query.Where(e => e.SectorId == sectorId);
+            }
+
+            // Esto sirve para que el frontend sepa cuántas páginas hay en total
+            var totalItems = await query.CountAsync();
+
+            // Fórmula: Saltamos (PaginaActual - 1) * Cantidad, y tomamos la Cantidad
+            var empleadosPaginados = await query
+                .Skip((pagina - 1) * itemsPorPagina)
+                .Take(itemsPorPagina)
+                .ToListAsync();
+
+            var resultado = new
+            {
+                TotalItems = totalItems,
+                PaginaActual = pagina,
+                ItemsPorPagina = itemsPorPagina,
+                TotalPaginas = (int)Math.Ceiling((double)totalItems / itemsPorPagina),
+                Datos = empleadosPaginados
+            };
+
+            return Ok(resultado);
+        }
+
         // POST: api/empleados/{id}/desvincular 
         //hu5
         [HttpPost("{id}/desvincular")]
