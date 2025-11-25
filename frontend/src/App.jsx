@@ -4,8 +4,8 @@ import Administrador from "./components/pages/Administrador";
 import Menu from "./components/shared/Menu";
 import Footer from "./components/shared/Footer";
 import Configuracion from "./components/pages/Configuracion";
-import Roles from "./components/pages/configuraciones/Roles";
-import FormularioRoles from "./components/pages/configuraciones/FormularioRoles";
+import Sectores from "./components/pages/configuraciones/Sectores";
+import FormularioSector from "./components/pages/configuraciones/FormularioSector";
 
 function App() {
   return (
@@ -20,8 +20,8 @@ function App() {
               element={<Administrador></Administrador>}
             />
             <Route path="/configuracion" element={<Configuracion></Configuracion>}/>
-            <Route path="configuracion/roles" element={<Roles></Roles>}/>
-            <Route path="configuracion/crear" element={<FormularioRoles></FormularioRoles>}/>
+            <Route path="configuracion/sectores" element={<Sectores></Sectores>}/>
+            <Route path="configuracion/crear" element={<FormularioSector></FormularioSector>}/>
           </Routes>
         </main>
 

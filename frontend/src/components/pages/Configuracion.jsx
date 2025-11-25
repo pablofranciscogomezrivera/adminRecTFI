@@ -6,10 +6,6 @@ const Configuracion = () => {
             <Link className="nav-link" to={"/configuracion/sectores"}>
               Gestionar sectores
             </Link>
-<Link className="nav-link" to={"/configuracion/roles"}>
-              Gestionar roles
-            </Link>
-
             
         </div>
     );
