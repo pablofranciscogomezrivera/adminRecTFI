@@ -51,18 +51,10 @@ export default function Login({ setUsuarioLogueado }) {
             {errors.password && <small className="text-danger">{errors.password.message}</small>}
           </Form.Group>
 
-          <Button type="submit" variant="success" className="w-100 no-focus-outline">
+          <Button type="submit" variant="primary" className="w-100 no-focus-outline">
             Ingresar
           </Button>
         </Form>
-
-        <Button
-          className="w-100 mt-3"
-          variant="secondary"
-          onClick={() => navigate("/register")}
-        >
-          ¿No tenés cuenta? Registrate
-        </Button>
       </Card>
     </Container>
   );
