@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import MenuEmpleados from "../shared/MenuEmpleados";
+import MenuEmpleados from "../components/MenuEmpleados";
 
 const Configuracion = () => {
     return (

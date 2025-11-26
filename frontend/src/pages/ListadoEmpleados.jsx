@@ -15,7 +15,7 @@ export const EmployeeList = () => {
       <ul>
         {employees.map((emp) => (
           <li key={emp.id} style={{ marginBottom: 8 }}>
-            <strong>{emp.name}</strong> — {emp.position} — {emp.email}{" "}
+            <strong>{emp.nombre}</strong> — {emp.rol.descripcion} — {emp.email}{" "}
             <Link to={`/edit/${emp.id}`}>Editar</Link>
           </li>
         ))}

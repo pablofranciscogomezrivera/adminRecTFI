@@ -11,6 +11,7 @@ export const useEmployees = (params = {}) => {
     setError(null);
     try {
       const res = await getEmployees(params);
+      console.log(res.data);
       setEmployees(res.data);
     } catch (err) {
       setError(err);
