@@ -45,7 +45,7 @@ const Menu = ({ usuarioLogueado, setUsuarioLogueado }) => {
               // Si el usuario está logueado, mostramos su rol y el botón de Cerrar Sesión
               <>
                 <Navbar.Text className="me-3 nav-link disabled">
-                  Hola, **{usuarioLogueado.role}**
+                  Hola, {usuarioLogueado.role}
                 </Navbar.Text>
                 <Button 
                   variant="outline-danger" 
