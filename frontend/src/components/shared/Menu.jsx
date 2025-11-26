@@ -1,7 +1,15 @@
-import { Navbar, Container, Nav } from "react-bootstrap";
-import { NavLink } from "react-router"; // corregido
+import { Navbar, Container, Nav, Button } from "react-bootstrap";
+import { NavLink, useNavigate } from "react-router"; 
+import { logoutUser } from "../api/mockAuthApi"; 
 
-const Menu = ({ usuarioLogueado }) => {
+const Menu = ({ usuarioLogueado, setUsuarioLogueado }) => {
+  const navigate = useNavigate(); 
+
+  const handleLogout = () => {
+    logoutUser(setUsuarioLogueado);
+    navigate("/"); 
+  };
+
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
@@ -13,6 +21,7 @@ const Menu = ({ usuarioLogueado }) => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
+            {/* Link a Inicio */}
             <NavLink className="nav-link" to="/">
               Inicio
             </NavLink>
@@ -31,8 +40,23 @@ const Menu = ({ usuarioLogueado }) => {
               </NavLink>
             )}
 
-            {/* Link login si no hay usuario logueado */}
-            {!usuarioLogueado && (
+            {/* Renderizado Condicional de Login / Logout */}
+            {usuarioLogueado ? (
+              // Si el usuario está logueado, mostramos su rol y el botón de Cerrar Sesión
+              <>
+                <Navbar.Text className="me-3 nav-link disabled">
+                  Hola, **{usuarioLogueado.role}**
+                </Navbar.Text>
+                <Button 
+                  variant="outline-danger" 
+                  onClick={handleLogout}
+                  className="ms-2" // Añadimos un pequeño margen
+                >
+                  Cerrar Sesión
+                </Button>
+              </>
+            ) : (
+              // Si no está logueado, mostramos el enlace a Login
               <NavLink className="nav-link" to="/login">
                 Login
               </NavLink>

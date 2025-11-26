@@ -11,9 +11,7 @@ export default function Login({ setUsuarioLogueado }) {
   const onSubmit = async (data) => {
     try {
       const response = await loginUser(data.email, data.password);
-      localStorage.setItem("token", response.token); // Guardar JWT
-
-      const user = getUserFromToken(); // Decodificar token
+      const user = response.user;
       setUsuarioLogueado(user);        // <-- actualiza estado global
 
       Swal.fire("Bienvenido!", "Sesión iniciada correctamente", "success");

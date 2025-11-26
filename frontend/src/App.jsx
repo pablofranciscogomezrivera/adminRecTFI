@@ -20,13 +20,18 @@ function App() {
 
   // Guardar usuario logueado en sessionStorage cada vez que cambie
   useEffect(() => {
-    sessionStorage.setItem("usuarioKey", JSON.stringify(usuarioLogueado));
+    // Si el usuario es null, borra la clave, si no, la guarda.
+    if (usuarioLogueado) {
+      sessionStorage.setItem("usuarioKey", JSON.stringify(usuarioLogueado));
+    } else {
+      sessionStorage.removeItem("usuarioKey"); // Limpiamos la sesión al hacer logout
+    }
   }, [usuarioLogueado]);
 
   return (
     <BrowserRouter>
       {/* Menu recibe usuarioLogueado para mostrar links según rol */}
-      <Menu usuarioLogueado={usuarioLogueado} />
+      <Menu usuarioLogueado={usuarioLogueado} setUsuarioLogueado={setUsuarioLogueado} />
 
       <Routes>
         {/* Página principal */}
@@ -59,8 +64,6 @@ function App() {
           }
         />
 
-        {/* Página 404
-        <Route path="*" element={<Error404 />} /> */}
       </Routes>
 
       <Footer />
