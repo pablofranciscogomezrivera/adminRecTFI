@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import MenuEmpleados from "../components/MenuEmpleados";
 
 const Configuracion = () => {
     return (
@@ -6,6 +7,9 @@ const Configuracion = () => {
             <Link className="nav-link" to={"/configuracion/sectores"}>
               Gestionar sectores
             </Link>
+            <MenuEmpleados />
+            
+            
             
         </div>
     );
