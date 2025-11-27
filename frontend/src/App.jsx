@@ -8,6 +8,7 @@ import Sectores  from "./pages/configuraciones/Sectores";
 import FormularioSector from "./pages/configuraciones/FormularioSector";
 import { EmployeeCreate } from "./pages/AltaEmpleado";
 import {EmployeeList} from "./pages/ListadoEmpleados";
+import { EmployeeEdit } from "./pages/EditarEmpleado";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="configuracion/crear" element={<FormularioSector></FormularioSector>} />
             <Route path="empleados/alta" element={< EmployeeCreate />} />
             <Route path="empleados/listar" element={<EmployeeList />} />
+            <Route path="/edit/:id" element={<EmployeeEdit />} />
 
           </Routes>
         </main>

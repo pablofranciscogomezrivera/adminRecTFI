@@ -11,9 +11,12 @@ const EmployeeSchema = Yup.object().shape({
 export const EmployeeForm = ({ initialValues, roles, niveles, sectores,onSubmit, mode }) => {
   const defaultValues = { nombre: "",apellido:"",dni_legajo:"",fecha_ingreso:"",
            email: "", sueldo: "",sector:"",rol:"",nivel_estudio:"" };
+          
+           
   return (
     <div style={{ maxWidth: 600 }}>
       <h2>{mode === "edit" ? "Editar empleado" : "Alta de empleado"}</h2>
+      
 
       <Formik
         initialValues={initialValues || defaultValues}
