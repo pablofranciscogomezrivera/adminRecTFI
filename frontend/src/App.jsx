@@ -9,6 +9,9 @@ import Usuario from "./components/pages/Usuario";
 import Configuracion from "./pages/Configuracion";
 import Sectores from "./pages/configuraciones/Sectores";
 import FormularioSector from "./pages/configuraciones/FormularioSector";
+import Roles from "./components/pages/configuraciones/Roles";
+import FormularioRoles from "./components/pages/configuraciones/FormularioRoles";
+
 import { EmployeeCreate } from "./pages/AltaEmpleado";
 import { EmployeeEdit } from "./pages/EditarEmpleado";
 import { ListarEmpleados } from "./pages/ListarEmpleados";
@@ -52,6 +55,8 @@ function App() {
               <Route path="configuracion" element={<Configuracion />} />
               <Route path="configuracion/sectores" element={<Sectores />} />
               <Route path="configuracion/crear" element={<FormularioSector />} />
+             <Route path="configuracion/roles" element={<Roles />} />
+              <Route path="configuracion/crearRol" element={<FormularioRoles />} />
 
               <Route path="empleados/alta" element={<EmployeeCreate />} />
               <Route path="empleados/editar/:id" element={<EmployeeEdit />} />
