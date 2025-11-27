@@ -1,5 +1,5 @@
 
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router";
 import { EmployeeForm } from "../components/FormularioEmpleado";
 import { useEmployee } from "../hooks/ObtenerDatos";
 import { useUpdateEmployee } from "../hooks/Actualizar";
