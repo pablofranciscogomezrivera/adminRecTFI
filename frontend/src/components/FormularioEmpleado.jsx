@@ -1,6 +1,7 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useNavigate } from "react-router";
 import * as Yup from "yup";
+import { useSupervisores } from "../hooks/useSupervisor";
 
 const EmployeeSchema = Yup.object().shape({
   nombre: Yup.string().required("El nombre es obligatorio").min(2, "Mínimo 2 caracteres"),
@@ -12,7 +13,9 @@ export const EmployeeForm = ({ initialValues, roles, niveles, sectores,onSubmit,
   const defaultValues = { nombre: "",apellido:"",dni_legajo:"",fecha_ingreso:"",
            email: "", sueldo: "",sector:"",rol:"",nivel_estudio:"" };
           
-           
+          const { supervisores, loading } = useSupervisores();
+          console.log(supervisores);
+          if (loading) return <p>Cargando supervisores...</p>; 
   return (
     <div style={{ maxWidth: 600 }}>
       <h2>{mode === "edit" ? "Editar empleado" : "Alta de empleado"}</h2>
@@ -105,6 +108,22 @@ export const EmployeeForm = ({ initialValues, roles, niveles, sectores,onSubmit,
           </Field>
           <ErrorMessage name="sector" component="div" style={{ color: "red" }} />
         </div>
+
+
+        <div>
+              <label>Supervisor Directo</label>
+              <Field as="select" name="supervisorId">
+                <option value="">-- Seleccionar Supervisor --</option>
+
+                {supervisores.map(sup => (
+                  <option key={sup.id} value={sup.id}>
+                    {sup.nombre} - {sup.rol}
+                  </option>
+                ))}
+              </Field>
+
+              <ErrorMessage name="supervisorId" component="div" />
+            </div>
 
 
 

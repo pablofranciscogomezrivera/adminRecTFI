@@ -9,3 +9,5 @@ export const getEmployeeById = (id) => axiosClient.get(`${PATH}/${id}`);
 export const updateEmployee = (id, payload) => axiosClient.put(`${PATH}/${id}`, payload);
 export const desactivateEmployee = (id, exitDate) =>
   axiosClient.put(`${PATH}/${id}/desactivar`, { exitDate });
+export const getSupervisores = () =>
+  axiosClient.get(`${PATH}?rol=Supervisor`);
