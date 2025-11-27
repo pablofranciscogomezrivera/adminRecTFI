@@ -19,3 +19,19 @@ img{
     object-fit: cover!important;
     width: 100%!important;
 }
+
+/* Contenedor centrado en pantalla */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Tarjeta del login */
+.login-card {
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}

@@ -1,40 +1,83 @@
-import Menu from "./components/shared/Menu";
-import Footer from "./components/shared/Footer";
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router";
+import { useState, useEffect } from "react";
+
 import Inicio from "./pages/Inicio";
+import Login from "./components/pages/Login";
 import Administrador from "./pages/Administrador";
+import Usuario from "./components/pages/Usuario";
+
 import Configuracion from "./pages/Configuracion";
-import Sectores  from "./pages/configuraciones/Sectores";
+import Sectores from "./pages/configuraciones/Sectores";
 import FormularioSector from "./pages/configuraciones/FormularioSector";
 import { EmployeeCreate } from "./pages/AltaEmpleado";
-import {EmployeeList} from "./pages/ListadoEmpleados";
+import { EmployeeList } from "./pages/ListadoEmpleados";
 import { EmployeeEdit } from "./pages/EditarEmpleado";
 
+import ProtectorRutas from "./components/routes/ProtectorRutas";
+import Menu from "./components/shared/Menu";
+import Footer from "./components/shared/Footer";
+
 function App() {
+  const usuarioSessionStorage =
+    JSON.parse(sessionStorage.getItem("usuarioKey")) || null;
+
+  const [usuarioLogueado, setUsuarioLogueado] = useState(usuarioSessionStorage);
+
+  useEffect(() => {
+    if (usuarioLogueado) {
+      sessionStorage.setItem("usuarioKey", JSON.stringify(usuarioLogueado));
+    } else {
+      sessionStorage.removeItem("usuarioKey");
+    }
+  }, [usuarioLogueado]);
+
   return (
     <BrowserRouter>
+      <Menu usuarioLogueado={usuarioLogueado} setUsuarioLogueado={setUsuarioLogueado} />
+
       <div className="app-container">
-        <Menu></Menu>
         <main className="main-content">
           <Routes>
-            <Route path="/" element={<Inicio></Inicio>} />
+
+            {/* Ruta pública */}
+            <Route path="/" element={<Inicio />} />
+            <Route path="/login" element={<Login setUsuarioLogueado={setUsuarioLogueado} />} />
+
+            {/* Ruta protegida admin */}
             <Route
-              path="/administrador"
-              element={<Administrador></Administrador>}
+              path="/administrador/*"
+              element={<ProtectorRutas usuarioLogueado={usuarioLogueado} rolPermitido="admin" />}
+            >
+              <Route index element={<Administrador />} />
+              <Route path="configuracion" element={<Configuracion />} />
+              <Route path="configuracion/sectores" element={<Sectores />} />
+              <Route path="configuracion/crear" element={<FormularioSector />} />
+
+              <Route path="empleados/alta" element={<EmployeeCreate />} />
+              <Route path="empleados/listar" element={<EmployeeList />} />
+              <Route path="empleados/editar/:id" element={<EmployeeEdit />} />
+            </Route>
+
+            {/* Usuario normal */}
+            <Route
+              path="/usuario"
+              element={
+                <ProtectorRutas usuarioLogueado={usuarioLogueado} rolPermitido="user">
+                  <Usuario />
+                </ProtectorRutas>
+              }
             />
-            <Route path="/configuracion" element={<Configuracion></Configuracion>} />
-            <Route path="configuracion/sectores" element={<Sectores></Sectores>} />
-            <Route path="configuracion/crear" element={<FormularioSector></FormularioSector>} />
-            <Route path="empleados/alta" element={< EmployeeCreate />} />
-            <Route path="empleados/listar" element={<EmployeeList />} />
-            <Route path="/edit/:id" element={<EmployeeEdit />} />
+
+            {/* 404 opcional */}
+            <Route path="*" element={<div>Página no encontrada</div>} />
 
           </Routes>
         </main>
-
-        <Footer></Footer>
       </div>
+
+      <Footer />
     </BrowserRouter>
   );
 }
+
 export default App;
