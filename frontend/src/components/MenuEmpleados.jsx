@@ -18,9 +18,9 @@ function MenuEmpleados() {
           padding: "10px"
         }}>
           <ul>
-            <li><Link to="/empleados/alta">Alta de empleado</Link></li>
-            <li><Link to="/empleados/modificacion">Modificación</Link></li>
-            <li><Link to="/empleados/listar">Listar Empleados</Link></li>
+           <li><Link to="/administrador/empleados/alta">Alta de empleado</Link></li>
+            <li><Link to="/administrador/empleados/editar/1">Modificación (Ejemplo)</Link></li>
+            <li><Link to="/administrador/empleados/listar">Listar Empleados</Link></li>
           </ul>
         </div>
       )}

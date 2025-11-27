@@ -4,7 +4,7 @@ import MenuEmpleados from "../components/MenuEmpleados";
 const Configuracion = () => {
     return (
         <div>
-            <Link className="nav-link" to={"/configuracion/sectores"}>
+            <Link className="nav-link" to={"sectores"}>
               Gestionar sectores
             </Link>
             <MenuEmpleados />
