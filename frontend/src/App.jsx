@@ -10,8 +10,8 @@ import Configuracion from "./pages/Configuracion";
 import Sectores from "./pages/configuraciones/Sectores";
 import FormularioSector from "./pages/configuraciones/FormularioSector";
 import { EmployeeCreate } from "./pages/AltaEmpleado";
-import { EmployeeList } from "./pages/ListadoEmpleados";
 import { EmployeeEdit } from "./pages/EditarEmpleado";
+import { ListarEmpleados } from "./pages/ListarEmpleados";
 
 import ProtectorRutas from "./components/routes/ProtectorRutas";
 import Menu from "./components/shared/Menu";
@@ -54,8 +54,8 @@ function App() {
               <Route path="configuracion/crear" element={<FormularioSector />} />
 
               <Route path="empleados/alta" element={<EmployeeCreate />} />
-              <Route path="empleados/listar" element={<EmployeeList />} />
               <Route path="empleados/editar/:id" element={<EmployeeEdit />} />
+              <Route path="empleados/listado" element={<ListarEmpleados/>} />
             </Route>
 
             {/* Usuario normal */}

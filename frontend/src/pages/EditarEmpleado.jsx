@@ -21,8 +21,8 @@ export const EmployeeEdit = () => {
     useEffect(() => {
       const fetchData = async () => {
         const resRoles = await obtenerRoles();
-        const resNiveles = await obtenerSectores();
-        const resSectores = await obtenerNivelesEstudio();
+        const resSectores = await obtenerSectores();
+        const resNiveles = await obtenerNivelesEstudio();
   
         setRoles(resRoles.data);
         setNiveles(resNiveles.data);

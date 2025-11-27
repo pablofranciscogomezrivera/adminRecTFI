@@ -11,3 +11,9 @@ export const desactivateEmployee = (id, exitDate) =>
   axiosClient.put(`${PATH}/${id}/desactivar`, { exitDate });
 export const getSupervisores = () =>
   axiosClient.get(`${PATH}?rol=Supervisor`);
+export const getEmpleados = async ({ search, sector, page, pageSize }) => {
+  const response = await axiosClient.get(PATH, {
+    params: { search, sector, page, pageSize },
+  });
+return response.data;
+};
