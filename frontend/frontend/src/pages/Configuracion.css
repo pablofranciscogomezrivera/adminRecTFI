@@ -1,0 +1,204 @@
+.config-container {
+  padding: 3rem 1rem;
+  max-width: 1200px;
+  min-height: 60vh;
+}
+
+.config-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.back-button {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #666;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+.back-button:hover {
+  color: #1a1a1a;
+  background: #f5f5f5;
+}
+
+.config-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.config-subtitle {
+  font-size: 1rem;
+  color: #666;
+  font-weight: 400;
+}
+
+.config-card-link {
+  text-decoration: none;
+  display: block;
+  height: 100%;
+}
+
+.config-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #f0f0f0;
+  cursor: pointer;
+}
+
+.config-card-bg {
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: all 0.4s ease;
+}
+
+.config-card-sectors .config-card-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.config-card-roles .config-card-bg {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.config-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+  border-color: transparent;
+}
+
+.config-card:hover .config-card-bg {
+  opacity: 0.08;
+  transform: scale(1.5);
+}
+
+.config-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.config-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.config-card-sectors .config-icon-wrapper {
+  background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+  color: #667eea;
+}
+
+.config-card-roles .config-icon-wrapper {
+  background: linear-gradient(135deg, #f093fb20 0%, #f5576c20 100%);
+  color: #f5576c;
+}
+
+.config-card:hover .config-icon-wrapper {
+  transform: scale(1.1) rotate(-5deg);
+}
+
+.config-card-sectors:hover .config-icon-wrapper {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.config-card-roles:hover .config-icon-wrapper {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.config-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.config-card-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.config-card-description {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.config-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+
+.config-card-action {
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.config-card-sectors .config-card-action {
+  color: #667eea;
+}
+
+.config-card-roles .config-card-action {
+  color: #f5576c;
+}
+
+.config-card:hover .config-card-action {
+  transform: translateX(5px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .config-title {
+    font-size: 1.75rem;
+  }
+  
+  .config-card {
+    padding: 2rem;
+  }
+  
+  .back-button {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+  
+  .config-card-title {
+    font-size: 1.5rem;
+  }
+}

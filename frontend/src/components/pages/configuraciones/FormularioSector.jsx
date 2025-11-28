@@ -25,33 +25,43 @@ const FormularioSector = ({ titulo, crearSector, editarSector, sectorActual, cer
   }, [sectorActual, show, reset]);
 
 
-  const onSubmit = (data) => {
-    // 👉 MODO CREAR: Añadir a la tabla, confirmar y volver a la lista
-    if (!sectorActual) { 
-      crearSector(data); // 1. Ejecutar la acción de creación
+  const onSubmit = async (data) => {
+    try {
+      // 👉 MODO CREAR: Añadir a la tabla, confirmar y volver a la lista
+      if (!sectorActual) { 
+        await crearSector(data); // 1. Ejecutar la acción de creación
 
-      Swal.fire({ // 2. Mostrar la confirmación del SweetAlert
-        title: "Sector Creado",
-        text: `El sector '${data.nombre}' fue creado y agregado correctamente.`,
-        icon: "success",
-        confirmButtonText: "Genial",
-      }).then(() => {
-        cerrar(); // 3. Volver a la pantalla de Sectores (cerrar formulario/modal)
-      });
-      return;
-    }
+        Swal.fire({ // 2. Mostrar la confirmación del SweetAlert
+          title: "Sector Creado",
+          text: `El sector '${data.nombre}' fue creado y agregado correctamente.`,
+          icon: "success",
+          confirmButtonText: "Genial",
+        }).then(() => {
+          cerrar(); // 3. Volver a la pantalla de Sectores (cerrar formulario/modal)
+        });
+        return;
+      }
 
-    // 👉 MODO EDITAR: Actualizar, confirmar y volver a la lista
-    if (sectorActual) {
-      editarSector(sectorActual.id, data);
+      // 👉 MODO EDITAR: Actualizar, confirmar y volver a la lista
+      if (sectorActual) {
+        await editarSector(sectorActual.id, data);
 
+        Swal.fire({
+          title: "Sector Actualizado",
+          text: `El sector '${data.nombre}' fue actualizado correctamente.`,
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        }).then(() => {
+          cerrar(); // 3. Volver a la pantalla de Sectores (cerrar formulario/modal)
+        });
+      }
+    } catch (error) {
+      // Mostrar error si algo sale mal
       Swal.fire({
-        title: "Sector Actualizado",
-        text: `El sector '${data.nombre}' fue actualizado correctamente.`,
-        icon: "success",
+        title: "Error",
+        text: error.message || "Ocurrió un error al guardar el sector.",
+        icon: "error",
         confirmButtonText: "Aceptar",
-      }).then(() => {
-        cerrar(); // 3. Volver a la pantalla de Sectores (cerrar formulario/modal)
       });
     }
   };
@@ -72,22 +82,6 @@ const FormularioSector = ({ titulo, crearSector, editarSector, sectorActual, cer
               isInvalid={!!errors.nombre}
               {...register("nombre", {
                 required: "El nombre es obligatorio",
-                minLength: {
-                  value: 3,
-                  message: "Debe tener al menos 3 caracteres",
-                },
-                maxLength: {
-                  value: 50,
-                  message: "Debe tener como máximo 50 caracteres",
-                },
-              })}
-            />
-            <Form.Label>Descripcion</Form.Label>
-            <Form.Control
-              type="text"
-              isInvalid={!!errors.nombre}
-              {...register("descripcion", {
-                required: "La Descripcion es obligatorio",
                 minLength: {
                   value: 3,
                   message: "Debe tener al menos 3 caracteres",
