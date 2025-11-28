@@ -10,7 +10,10 @@ namespace BackAdminRec.Data
         {
         }
 
-        // Aquí definimos las tablas. Por ahora solo Sectores.
         public DbSet<Sector> Sectores { get; set; }
+        public DbSet<Rol> Roles { get; set; }
+        public DbSet<NivelEstudio> NivelesEstudio { get; set; }
+        public DbSet<Empleado> Empleados { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
     }
 }

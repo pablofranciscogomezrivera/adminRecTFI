@@ -1,0 +1,19 @@
+import axiosClient from "./axiosClient";
+
+const PATH = "/empleados"; // ajustar según el backend
+
+
+export const createEmployee = (payload) => axiosClient.post(PATH, payload);
+export const getEmployees = (params = {}) => axiosClient.get(PATH, { params });
+export const getEmployeeById = (id) => axiosClient.get(`${PATH}/${id}`);
+export const updateEmployee = (id, payload) => axiosClient.put(`${PATH}/${id}`, payload);
+export const desactivateEmployee = (id, exitDate) =>
+  axiosClient.put(`${PATH}/${id}/desactivar`, { exitDate });
+export const getSupervisores = () =>
+  axiosClient.get(`${PATH}?rol=Supervisor`);
+export const getEmpleados = async ({ search, sector, page, pageSize }) => {
+  const response = await axiosClient.get(PATH, {
+    params: { search, sector, page, pageSize },
+  });
+return response.data;
+};
