@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "https://localhost:7224/api",
+  baseURL: "https://localhost:5187/api",
   headers: { "Content-Type": "application/json" },
   timeout: 10000,
 });
@@ -25,10 +25,13 @@ axiosClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Token expirado o inválido
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      window.location.href = "/login";
+      // 🟢 CAMBIO: Solo redirigir/limpiar si NO estamos en el login.
+      // Esto permite que el componente Login maneje el error y muestre el SweetAlert
+      if (window.location.pathname !== "/login") {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/login";
+      }
     }
     return Promise.reject(error);
   }

@@ -18,6 +18,18 @@ namespace BackAdminRec.Controllers
             _context = context;
         }
 
+        // PUT: api/roles/{id}/activar
+        [HttpPut("{id}/activar")]
+        public async Task<IActionResult> ActivarRol(int id)
+        {
+            var rol = await _context.Roles.FindAsync(id);
+            if (rol == null) return NotFound();
+
+            rol.EstaActivo = true;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
         // 1. OBTENER TODOS LOS ROLES
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Rol>>> GetRoles()

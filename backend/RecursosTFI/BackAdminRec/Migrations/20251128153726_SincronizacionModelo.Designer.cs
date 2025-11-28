@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackAdminRec.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251125071626_TablaEmpleados")]
-    partial class TablaEmpleados
+    [Migration("20251128153726_SincronizacionModelo")]
+    partial class SincronizacionModelo
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -166,6 +166,33 @@ namespace BackAdminRec.Migrations
                     b.ToTable("Sectores");
                 });
 
+            modelBuilder.Entity("BackAdminRec.Models.Usuario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("EmpleadoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmpleadoId");
+
+                    b.ToTable("Usuarios");
+                });
+
             modelBuilder.Entity("BackAdminRec.Models.Empleado", b =>
                 {
                     b.HasOne("BackAdminRec.Models.NivelEstudio", "NivelEstudio")
@@ -195,6 +222,17 @@ namespace BackAdminRec.Migrations
                     b.Navigation("Sector");
 
                     b.Navigation("Supervisor");
+                });
+
+            modelBuilder.Entity("BackAdminRec.Models.Usuario", b =>
+                {
+                    b.HasOne("BackAdminRec.Models.Empleado", "Empleado")
+                        .WithMany()
+                        .HasForeignKey("EmpleadoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Empleado");
                 });
 #pragma warning restore 612, 618
         }

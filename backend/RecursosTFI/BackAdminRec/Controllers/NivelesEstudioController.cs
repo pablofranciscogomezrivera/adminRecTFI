@@ -16,6 +16,18 @@ namespace BackAdminRec.Controllers
             _context = context;
         }
 
+        // PUT: api/niveles-estudio/{id}/activar
+        [HttpPut("{id}/activar")]
+        public async Task<IActionResult> ActivarNivel(int id)
+        {
+            var nivel = await _context.NivelesEstudio.FindAsync(id);
+            if (nivel == null) return NotFound();
+
+            nivel.EstaActivo = true;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+}
         // GET: api/niveles-estudio
         [HttpGet]
         public async Task<ActionResult<IEnumerable<NivelEstudio>>> GetNivelesEstudio()

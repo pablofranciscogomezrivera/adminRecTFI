@@ -113,3 +113,14 @@ export const getNivelesEstudio = async () => {
     throw error;
   }
 };
+
+
+export const activateEmpleado = async (id) => {
+  try {
+    const response = await axiosClient.put(`/empleados/${id}/activar`);
+    return response.data;
+  } catch (error) {
+    console.error("Error activando empleado:", error);
+    throw error;
+  }
+};

@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Form, Container, Row, Col, Card, Modal, Spinner } from "react-bootstrap"; 
-import { useForm } from "react-hook-form"; 
+import { Table, Button, Container, Card, Spinner } from "react-bootstrap"; 
 import Swal from "sweetalert2";
 import FormularioRoles from "./FormularioRoles";
-import { getRoles, deleteRole } from "../../../utils/rolesAPI";
+import { getRoles, deleteRole, activateRole } from "../../../utils/rolesAPI";
 import "../../../pages/configuraciones/Configuraciones.css";
 
 const Roles = () => {
@@ -29,12 +28,10 @@ const Roles = () => {
   };
 
   const crearRol = async (nuevoRol) => {
-    // La creación ahora se maneja en FormularioRoles
     await cargarRoles();
   };
 
   const editarRol = async (idRol, rolEditar) => {
-    // La edición ahora se maneja en FormularioRoles
     await cargarRoles();
   };
 
@@ -76,6 +73,28 @@ const Roles = () => {
     });
   };
 
+  const confirmarActivar = (idRol) => {
+    Swal.fire({
+      title: "¿Activar Rol?",
+      text: "El rol volverá a estar disponible.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Sí, activar",
+      confirmButtonColor: "#28a745",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await activateRole(idRol);
+          await cargarRoles();
+          Swal.fire("Activado", "El rol ha sido activado.", "success");
+        } catch (error) {
+          Swal.fire("Error", "No se pudo activar el rol", "error");
+        }
+      }
+    });
+  };
+
   const handleAbrirCrear = () => {
     setRolActual(null); // Modo Creación
     setMostrarFormulario(true);
@@ -86,12 +105,10 @@ const Roles = () => {
     setMostrarFormulario(true);
   }
   
-  // Función para cerrar el modal y limpiar el estado de edición
   const cerrarFormulario = () => {
     setMostrarFormulario(false);
     setRolActual(null); 
   };
-
 
   return (
     <div className="configuraciones-page">
@@ -151,14 +168,24 @@ const Roles = () => {
                             >
                               ✏️ Editar
                             </Button>
-                            <Button
-                              variant="danger"
-                              size="sm"
-                              onClick={() => confirmarDesactivar(rol.id)}
-                              disabled={!rol.estaActivo}
-                            >
-                              🗑️ Desactivar
-                            </Button>
+
+                            {rol.estaActivo ? (
+                                <Button
+                                    variant="danger"
+                                    size="sm"
+                                    onClick={() => confirmarDesactivar(rol.id)}
+                                >
+                                    🗑️ Desactivar
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant="success"
+                                    size="sm"
+                                    onClick={() => confirmarActivar(rol.id)}
+                                >
+                                    ✅ Activar
+                                </Button>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -170,7 +197,6 @@ const Roles = () => {
           </Card>
         )}
         
-        {/* Modal de Creación/Edición */}
         <FormularioRoles          
           show={mostrarFormulario}
           titulo={rolActual ? "Editar Rol" : "Crear Nuevo Rol"}

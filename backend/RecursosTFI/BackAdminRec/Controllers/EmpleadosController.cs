@@ -18,6 +18,20 @@ namespace BackAdminRec.Controllers
             _context = context;
         }
 
+        // PUT: api/empleados/{id}/activar
+        [HttpPut("{id}/activar")]
+        [Authorize(Roles = "Administrador,RRHH")]
+        public async Task<IActionResult> ActivarEmpleado(int id)
+        {
+            var empleado = await _context.Empleados.FindAsync(id);
+            if (empleado == null) return NotFound();
+
+            empleado.EstaActivo = true;
+            empleado.FechaEgreso = null; // Limpiamos la fecha de egreso al reactivar
+            await _context.SaveChangesAsync();
+
+            return Ok(new { mensaje = $"El empleado {empleado.Nombre} {empleado.Apellido} ha sido reactivado." });
+        }
         // POST: api/empleados
         [HttpPost]
         [Authorize(Roles = "Administrador,RRHH")]
@@ -28,7 +42,7 @@ namespace BackAdminRec.Controllers
                 return BadRequest("El sueldo no puede ser negativo.");
             }
 
-       
+
             bool existeDuplicado = await _context.Empleados.AnyAsync(e =>
                 e.Legajo == empleado.Legajo || e.DNI == empleado.DNI);
 
@@ -37,7 +51,7 @@ namespace BackAdminRec.Controllers
                 return BadRequest("Ya existe un empleado con ese Legajo o DNI.");
             }
 
-            
+
             if (!await _context.Sectores.AnyAsync(s => s.Id == empleado.SectorId))
             {
                 return BadRequest("El Sector especificado no existe.");
@@ -48,7 +62,7 @@ namespace BackAdminRec.Controllers
                 return BadRequest("El Rol especificado no existe.");
             }
 
-            
+
             if (empleado.NivelEstudioId.HasValue &&
                 !await _context.NivelesEstudio.AnyAsync(n => n.Id == empleado.NivelEstudioId))
             {
@@ -69,8 +83,8 @@ namespace BackAdminRec.Controllers
         public async Task<ActionResult<Empleado>> GetEmpleado(int id)
         {
             var empleado = await _context.Empleados
-                .Include(e => e.Sector)       
-                .Include(e => e.Rol)          
+                .Include(e => e.Sector)
+                .Include(e => e.Rol)
                 .Include(e => e.NivelEstudio)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
@@ -81,16 +95,15 @@ namespace BackAdminRec.Controllers
 
             return empleado;
         }
-
-        // GET: api/empleados
-        // hu7
+        
         [HttpGet]
         [Authorize(Roles = "Administrador,RRHH,Supervisor,Gerente")]
         public async Task<ActionResult<IEnumerable<object>>> GetEmpleados(
             [FromQuery] string? search = null,
             [FromQuery] int? sectorId = null,
             [FromQuery] int pagina = 1,
-            [FromQuery] int itemsPorPagina = 10)
+            [FromQuery] int itemsPorPagina = 10,
+            [FromQuery] bool incluirInactivos = false) // Nuevo parámetro
         {
             var query = _context.Empleados
                 .Include(e => e.Sector)
@@ -100,6 +113,10 @@ namespace BackAdminRec.Controllers
                 .Where(e => e.EstaActivo)
                 .AsQueryable();
 
+            if (!incluirInactivos)
+            {
+                query = query.Where(e => e.EstaActivo);
+            }
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(e => e.Nombre.Contains(search) ||
@@ -166,7 +183,7 @@ namespace BackAdminRec.Controllers
         public async Task<ActionResult<IEnumerable<Empleado>>> GetCandidatosSupervisores()
         {
             return await _context.Empleados
-                .Include(e => e.Rol) 
+                .Include(e => e.Rol)
                 .Where(e => e.EstaActivo &&
                            (e.Rol.Nombre.Contains("Supervisor") || e.Rol.Nombre.Contains("Gerente")))
                 .ToListAsync();
@@ -245,7 +262,7 @@ namespace BackAdminRec.Controllers
                 }
             }
 
-            return Ok(empleadoExistente); 
+            return Ok(empleadoExistente);
         }
 
         private bool EmpleadoExists(int id)

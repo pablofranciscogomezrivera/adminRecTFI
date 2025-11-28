@@ -21,11 +21,12 @@ namespace BackAdminRec.Models
         public string Apellido { get; set; } = string.Empty;
 
         [Required]
-        [MaxLength(20)]
+        [MaxLength(20)] // Mantenemos MaxLength por seguridad de DB
+        [RegularExpression(@"^\d{7,8}$", ErrorMessage = "El DNI debe tener 7 u 8 dígitos numéricos.")] // 🟢 NUEVA VALIDACIÓN
         public string DNI { get; set; } = string.Empty; 
 
         [Required]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "El formato del email no es válido.")]
         [MaxLength(255)]
         public string Email { get; set; } = string.Empty;
 

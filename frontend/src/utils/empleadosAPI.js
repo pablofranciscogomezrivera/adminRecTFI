@@ -2,7 +2,7 @@ import axiosClient from "./axiosClient";
 
 /**
  * Get all employees with filters and pagination
- * @param {object} params - {search, sectorId, pagina, itemsPorPagina}
+ * @param {object} params - {search, sectorId, pagina, itemsPorPagina, incluirInactivos}
  * @returns {Promise}
  */
 export const getEmpleados = async (params = {}) => {
@@ -13,6 +13,8 @@ export const getEmpleados = async (params = {}) => {
     if (params.sectorId) queryParams.append("sectorId", params.sectorId);
     if (params.pagina) queryParams.append("pagina", params.pagina);
     if (params.itemsPorPagina) queryParams.append("itemsPorPagina", params.itemsPorPagina);
+    // Agregamos el parámetro para incluir inactivos
+    if (params.incluirInactivos) queryParams.append("incluirInactivos", params.incluirInactivos);
     
     const response = await axiosClient.get(`/empleados?${queryParams.toString()}`);
     return response.data;
@@ -82,6 +84,21 @@ export const desvincularEmpleado = async (id, fechaEgreso) => {
     return response.data;
   } catch (error) {
     console.error("Error desvinculando empleado:", error);
+    throw error;
+  }
+};
+
+/**
+ * Activate employee (reactivación)
+ * @param {number} id 
+ * @returns {Promise}
+ */
+export const activateEmpleado = async (id) => {
+  try {
+    const response = await axiosClient.put(`/empleados/${id}/activar`);
+    return response.data;
+  } catch (error) {
+    console.error("Error activando empleado:", error);
     throw error;
   }
 };

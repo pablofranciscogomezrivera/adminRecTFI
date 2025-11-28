@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { Container, Table, Button, Spinner, Card } from "react-bootstrap";
-import { Link } from "react-router";
+import { Table, Button, Spinner, Card, Container } from "react-bootstrap";
 import Swal from "sweetalert2";
 import FormularioSector from "./FormularioSector";
-import { getSectores, deleteSector } from "../../utils/sectoresAPI";
+import { getSectores, deleteSector, activateSector } from "../../utils/sectoresAPI";
 import "./Configuraciones.css";
 
 const Sectores = () => {
@@ -29,14 +28,12 @@ const Sectores = () => {
   };
 
   const crearSector = async (nuevoSector) => {
-    // La creación ahora se maneja en FormularioSector
-    // Solo recargamos la lista
+    // La creación se maneja en el modal, solo recargamos
     await cargarSectores();
   };
 
   const editarSector = async (idSector, sectorEditar) => {
-    // La edición ahora se maneja en FormularioSector
-    // Solo recargamos la lista
+    // La edición se maneja en el modal, solo recargamos
     await cargarSectores();
   };
 
@@ -45,7 +42,7 @@ const Sectores = () => {
       await deleteSector(idSector);
       await cargarSectores();
     } catch (error) {
-      throw error; // Para que lo maneje confirmarDesactivar
+      throw error;
     }
   };
 
@@ -77,6 +74,29 @@ const Sectores = () => {
       }
     });
   };
+
+  const confirmarActivar = (idSector) => {
+    Swal.fire({
+      title: "¿Activar sector?",
+      text: "El sector volverá a estar disponible.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Sí, activar",
+      confirmButtonColor: "#28a745",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await activateSector(idSector);
+          await cargarSectores(); // Recargar tabla
+          Swal.fire("Activado", "El sector ha sido activado.", "success");
+        } catch (error) {
+          Swal.fire("Error", "No se pudo activar el sector", "error");
+        }
+      }
+    });
+  };
+
   const handleAbrirCrear = () => {
     setSectorActual(null); // Modo Creación
     setMostrarFormulario(true);
@@ -86,9 +106,10 @@ const Sectores = () => {
     setSectorActual(sector); // Modo Edición
     setMostrarFormulario(true);
   };
+
   const cerrarFormulario = () => {
     setMostrarFormulario(false);
-    setSectorActual(null); // Siempre limpiar el sector actual al cerrar
+    setSectorActual(null); 
   };
 
   return (
@@ -117,6 +138,7 @@ const Sectores = () => {
                   <tr>
                     <th>#</th>
                     <th>Nombre</th>
+                    <th>Antigüedad Prom. (Años)</th> {/* Nueva Columna */}
                     <th>Estado</th>
                     <th>Acciones</th>
                   </tr>
@@ -124,7 +146,7 @@ const Sectores = () => {
                 <tbody>
                   {sectores.length === 0 ? (
                     <tr>
-                      <td colSpan="4" className="empty-state">
+                      <td colSpan="5" className="empty-state">
                         No hay sectores registrados
                       </td>
                     </tr>
@@ -133,6 +155,7 @@ const Sectores = () => {
                       <tr key={sector.id}>
                         <td><strong>{index + 1}</strong></td>
                         <td>{sector.nombre}</td>
+                        <td>{sector.antiguedadPromedio || 0} años</td> {/* Dato calculado */}
                         <td>
                           <span className={`badge ${sector.estaActivo ? 'bg-success' : 'bg-danger'}`}>
                             {sector.estaActivo ? "✓ Activo" : "✗ Inactivo"}
@@ -147,14 +170,25 @@ const Sectores = () => {
                             >
                               ✏️ Editar
                             </Button>
-                            <Button
-                              variant="danger"
-                              size="sm"
-                              onClick={() => confirmarDesactivar(sector.id)}
-                              disabled={!sector.estaActivo}
-                            >
-                              🗑️ Desactivar
-                            </Button>
+                            
+                            {/* Lógica condicional para Activar/Desactivar */}
+                            {sector.estaActivo ? (
+                                <Button
+                                  variant="danger"
+                                  size="sm"
+                                  onClick={() => confirmarDesactivar(sector.id)}
+                                >
+                                  🗑️ Desactivar
+                                </Button>
+                            ) : (
+                                <Button
+                                  variant="success"
+                                  size="sm"
+                                  onClick={() => confirmarActivar(sector.id)}
+                                >
+                                  ✅ Activar
+                                </Button>
+                            )}
                           </div>
                         </td>
                       </tr>

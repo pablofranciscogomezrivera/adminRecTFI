@@ -1,8 +1,23 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router";
-import { Container, Row, Col, Table, Button, Form, InputGroup, Card, Spinner, Pagination } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Table,
+  Button,
+  Form,
+  Card,
+  Spinner,
+  Pagination,
+} from "react-bootstrap";
 import Swal from "sweetalert2";
-import { getEmpleados, desvincularEmpleado } from "../utils/empleadosAPI";
+// CORRECCIÓN: Se han unificado las importaciones aquí
+import { 
+  getEmpleados, 
+  desvincularEmpleado, 
+  activateEmpleado 
+} from "../utils/empleadosAPI";
 import { getSectores } from "../utils/sectoresAPI";
 import "./ListarEmpleados.css";
 
@@ -15,6 +30,7 @@ export function ListarEmpleados() {
   const [totalPaginas, setTotalPaginas] = useState(1);
   const [loading, setLoading] = useState(true);
   const itemsPorPagina = 10;
+  const [mostrarInactivos, setMostrarInactivos] = useState(false);
 
   useEffect(() => {
     cargarSectores();
@@ -22,12 +38,12 @@ export function ListarEmpleados() {
 
   useEffect(() => {
     cargarEmpleados();
-  }, [search, sectorId, pagina]);
+  }, [search, sectorId, pagina, mostrarInactivos]); // Agregué mostrarInactivos a las dependencias para que recargue al cambiar el switch
 
   const cargarSectores = async () => {
     try {
       const data = await getSectores();
-      setSectores(data.filter(s => s.estaActivo));
+      setSectores(data.filter((s) => s.estaActivo));
     } catch (error) {
       console.error("Error cargando sectores:", error);
     }
@@ -41,8 +57,8 @@ export function ListarEmpleados() {
         sectorId: sectorId || undefined,
         pagina,
         itemsPorPagina,
+        incluirInactivos: mostrarInactivos,
       };
-      
       const response = await getEmpleados(params);
       setEmpleados(response.datos || []);
       setTotalPaginas(response.totalPaginas || 1);
@@ -52,6 +68,27 @@ export function ListarEmpleados() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleActivate = async (emp) => {
+    Swal.fire({
+      title: `¿Reactivar a ${emp.nombre}?`,
+      text: "El empleado volverá a estar activo.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Sí, activar",
+      confirmButtonColor: "#28a745",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await activateEmpleado(emp.id);
+          Swal.fire("Éxito", "Empleado reactivado", "success");
+          cargarEmpleados();
+        } catch (error) {
+          Swal.fire("Error", "No se pudo reactivar", "error");
+        }
+      }
+    });
   };
 
   const handleDesactivate = async (emp) => {
@@ -78,7 +115,11 @@ export function ListarEmpleados() {
       cargarEmpleados();
     } catch (error) {
       console.error("Error desvinculando empleado:", error);
-      Swal.fire("Error", error.response?.data?.mensaje || "No se pudo desvincular al empleado", "error");
+      Swal.fire(
+        "Error",
+        error.response?.data?.mensaje || "No se pudo desvincular al empleado",
+        "error"
+      );
     }
   };
 
@@ -89,9 +130,7 @@ export function ListarEmpleados() {
           <Card.Header>
             <h2>Listado de Empleados</h2>
             <Link to="/administrador/empleados/alta">
-              <Button className="btn-new-employee">
-                ➕ Nuevo Empleado
-              </Button>
+              <Button className="btn-new-employee">➕ Nuevo Empleado</Button>
             </Link>
           </Card.Header>
           <Card.Body>
@@ -118,12 +157,21 @@ export function ListarEmpleados() {
                     }}
                   >
                     <option value="">📁 Todos los sectores</option>
-                    {sectores.map(sec => (
+                    {sectores.map((sec) => (
                       <option key={sec.id} value={sec.id}>
                         {sec.nombre}
                       </option>
                     ))}
                   </Form.Select>
+                </Col>
+                <Col md={2}>
+                  <Form.Check
+                    type="switch"
+                    label="Mostrar inactivos"
+                    checked={mostrarInactivos}
+                    onChange={(e) => setMostrarInactivos(e.target.checked)}
+                    className="mt-2"
+                  />
                 </Col>
               </Row>
             </div>
@@ -158,26 +206,49 @@ export function ListarEmpleados() {
                         </td>
                       </tr>
                     ) : (
-                      empleados.map(emp => (
+                      empleados.map((emp) => (
                         <tr key={emp.id}>
-                          <td><strong>{emp.nombre} {emp.apellido}</strong></td>
+                          <td>
+                            <strong>
+                              {emp.nombre} {emp.apellido}
+                            </strong>
+                          </td>
                           <td>{emp.legajo}</td>
                           <td>{emp.email}</td>
                           <td>{emp.rol?.nombre || "-"}</td>
                           <td>{emp.sector?.nombre || "-"}</td>
-                          <td>{emp.supervisor ? `${emp.supervisor.nombre} ${emp.supervisor.apellido}` : "-"}</td>
                           <td>
-                            <div className="action-buttons">
-                              <Link to={`/administrador/empleados/editar/${emp.id}`}>
-                                <Button variant="info" size="sm">✏️ Editar</Button>
-                              </Link>
-                              <Button 
-                                variant="danger" 
-                                size="sm"
-                                onClick={() => handleDesactivate(emp)}
+                            {emp.supervisor
+                              ? `${emp.supervisor.nombre} ${emp.supervisor.apellido}`
+                              : "-"}
+                          </td>
+                          <td>
+                            <div className="d-flex gap-2">
+                              <Link
+                                to={`/administrador/empleados/editar/${emp.id}`}
                               >
-                                🗑️ Desvincular
-                              </Button>
+                                <Button variant="info" size="sm">
+                                  ✏️
+                                </Button>
+                              </Link>
+
+                              {emp.estaActivo ? (
+                                <Button
+                                  variant="danger"
+                                  size="sm"
+                                  onClick={() => handleDesactivate(emp)}
+                                >
+                                  🗑️ Desvincular
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="success"
+                                  size="sm"
+                                  onClick={() => handleActivate(emp)}
+                                >
+                                  ✅ Activar
+                                </Button>
+                              )}
                             </div>
                           </td>
                         </tr>
@@ -189,9 +260,15 @@ export function ListarEmpleados() {
                 {/* Paginación */}
                 {totalPaginas > 1 && (
                   <Pagination className="justify-content-center">
-                    <Pagination.First onClick={() => setPagina(1)} disabled={pagina === 1} />
-                    <Pagination.Prev onClick={() => setPagina(p => Math.max(1, p - 1))} disabled={pagina === 1} />
-                    
+                    <Pagination.First
+                      onClick={() => setPagina(1)}
+                      disabled={pagina === 1}
+                    />
+                    <Pagination.Prev
+                      onClick={() => setPagina((p) => Math.max(1, p - 1))}
+                      disabled={pagina === 1}
+                    />
+
                     {[...Array(totalPaginas)].map((_, idx) => (
                       <Pagination.Item
                         key={idx + 1}
@@ -201,9 +278,17 @@ export function ListarEmpleados() {
                         {idx + 1}
                       </Pagination.Item>
                     ))}
-                    
-                    <Pagination.Next onClick={() => setPagina(p => Math.min(totalPaginas, p + 1))} disabled={pagina === totalPaginas} />
-                    <Pagination.Last onClick={() => setPagina(totalPaginas)} disabled={pagina === totalPaginas} />
+
+                    <Pagination.Next
+                      onClick={() =>
+                        setPagina((p) => Math.min(totalPaginas, p + 1))
+                      }
+                      disabled={pagina === totalPaginas}
+                    />
+                    <Pagination.Last
+                      onClick={() => setPagina(totalPaginas)}
+                      disabled={pagina === totalPaginas}
+                    />
                   </Pagination>
                 )}
               </>

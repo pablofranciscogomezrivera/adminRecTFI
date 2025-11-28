@@ -12,21 +12,49 @@ namespace BackAdminRec.Controllers
     [Authorize(Roles = "Administrador")]
     public class SectoresController : ControllerBase
     {
-        private readonly AppDbContext _context; // Reemplaza AppDbContext con el nombre de tu contexto
+        private readonly AppDbContext _context;
 
         public SectoresController(AppDbContext context)
         {
             _context = context;
         }
 
-        // 1. GET /api/sectores
+        // 1. GET: api/sectores
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Sector>>> GetSectores()
+        public async Task<ActionResult<IEnumerable<object>>> GetSectores()
         {
-            return await _context.Sectores.ToListAsync();
+            // Usamos DateTime.Now local para la consulta
+            var hoy = DateTime.Now;
+
+            var sectores = await _context.Sectores
+                .Select(s => new
+                {
+                    s.Id,
+                    s.Nombre,
+                    s.EstaActivo,
+                    // CORRECCIÓN AQUÍ:
+                    // 1. Calculamos la diferencia en días usando funciones de EF para SQL
+                    // 2. Casteamos a (double?) para permitir nulos si no hay empleados
+                    // 3. Usamos ?? 0 para poner 0 por defecto si el promedio es null
+                    AntiguedadPromedio = _context.Empleados
+                        .Where(e => e.SectorId == s.Id && e.EstaActivo)
+                        .Select(e => (double?)EF.Functions.DateDiffDay(e.FechaIngreso, hoy) / 365.0)
+                        .Average() ?? 0
+                })
+                .ToListAsync();
+
+            // Proyección final para redondear
+            var resultado = sectores.Select(s => new {
+                s.Id,
+                s.Nombre,
+                s.EstaActivo,
+                AntiguedadPromedio = Math.Round(s.AntiguedadPromedio, 1) // Redondear a 1 decimal
+            });
+
+            return Ok(resultado);
         }
 
-        // 2. POST /api/sectores
+        // 2. POST: api/sectores
         [HttpPost]
         public async Task<ActionResult<Sector>> PostSector(Sector sector)
         {
@@ -37,17 +65,16 @@ namespace BackAdminRec.Controllers
             {
                 return BadRequest("El nombre del sector ya existe."); 
             }
-
             
             sector.EstaActivo = true;
 
             _context.Sectores.Add(sector);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSectores", new { id = sector.Id }, sector); // Retorna 201 Created
+            return CreatedAtAction("GetSectores", new { id = sector.Id }, sector);
         }
 
-        // 3. PUT /api/sectores/{id}
+        // 3. PUT: api/sectores/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSector(int id, Sector sectorModificado)
         {
@@ -60,19 +87,25 @@ namespace BackAdminRec.Controllers
 
             sectorExistente.Nombre = sectorModificado.Nombre;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
+            await _context.SaveChangesAsync();
 
-            return NoContent(); // O 200 OK
+            return NoContent();
         }
 
-        // 4. DELETE /api/sectores/{id}
+        // 4. PUT: api/sectores/{id}/activar
+        [HttpPut("{id}/activar")]
+        public async Task<IActionResult> ActivarSector(int id)
+        {
+            var sector = await _context.Sectores.FindAsync(id);
+            if (sector == null) return NotFound();
+
+            sector.EstaActivo = true;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // 5. DELETE: api/sectores/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSector(int id)
         {
@@ -86,7 +119,7 @@ namespace BackAdminRec.Controllers
 
             await _context.SaveChangesAsync();
 
-            return NoContent(); // Retorna 204 No Content
+            return NoContent();
         }
     }
 }

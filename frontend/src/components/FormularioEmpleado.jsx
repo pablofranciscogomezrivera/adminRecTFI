@@ -5,10 +5,13 @@ import { useSupervisores } from "../hooks/useSupervisor";
 import { Container, Row, Col, Button as BsButton, Card, Spinner } from "react-bootstrap";
 import "./FormularioEmpleado.css";
 
+// Esquema de validación actualizado
 const EmployeeSchema = Yup.object().shape({
   nombre: Yup.string().required("El nombre es obligatorio").min(2, "Mínimo 2 caracteres"),
   apellido: Yup.string().required("El apellido es obligatorio").min(2, "Mínimo 2 caracteres"),
-  dni: Yup.string().required("El DNI es obligatorio"),
+  dni: Yup.string()
+    .required("El DNI es obligatorio")
+    .matches(/^\d{7,8}$/, "El DNI debe tener 7 u 8 dígitos numéricos"), // Validación formato argentino
   legajo: Yup.string().required("El legajo es obligatorio"),
   fechaIngreso: Yup.date().required("La fecha de ingreso es obligatoria"),
   email: Yup.string().email("Email inválido").required("El email es obligatorio"),
@@ -91,7 +94,7 @@ export const EmployeeForm = ({ initialValues, roles, niveles, sectores, onSubmit
                   <Col md={6}>
                     <div className="mb-3">
                       <label className="form-label">DNI *</label>
-                      <Field name="dni" className="form-control" placeholder="DNI" />
+                      <Field name="dni" className="form-control" placeholder="Ej: 12345678" />
                       <div className="text-danger"><ErrorMessage name="dni" /></div>
                     </div>
                   </Col>

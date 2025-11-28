@@ -59,3 +59,18 @@ export const deleteSector = async (id) => {
     throw error;
   }
 };
+
+/**
+ * Activate sector
+ * @param {number} id 
+ * @returns {Promise}
+ */
+export const activateSector = async (id) => {
+  try {
+    const response = await axiosClient.put(`/sectores/${id}/activar`);
+    return response.data;
+  } catch (error) {
+    console.error("Error activando sector:", error);
+    throw error;
+  }
+};

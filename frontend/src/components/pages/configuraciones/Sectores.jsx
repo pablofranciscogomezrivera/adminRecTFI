@@ -5,6 +5,60 @@ import Swal from "sweetalert2";
 import FormularioSector from "./FormularioSector";
 import { sectoresApi } from "../../../services/api";
 
+import { getSectores, deleteSector, activateSector } from "../../utils/sectoresAPI"; // Importar activateSector
+
+// ... dentro del componente ...
+
+  const confirmarActivar = (idSector) => {
+    Swal.fire({
+      title: "¿Activar sector?",
+      text: "El sector volverá a estar disponible.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Sí, activar",
+      confirmButtonColor: "#28a745",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await activateSector(idSector);
+          await cargarSectores(); // Recargar tabla
+          Swal.fire("Activado", "El sector ha sido activado.", "success");
+        } catch (error) {
+          Swal.fire("Error", "No se pudo activar el sector", "error");
+        }
+      }
+    });
+  };
+
+// ... En el renderizado de la tabla (dentro del .map) ...
+<td>
+  <div className="action-buttons">
+    <Button variant="info" size="sm" onClick={() => handleAbrirEditar(sector)}>
+      ✏️ Editar
+    </Button>
+    
+    {/* Lógica condicional para mostrar Desactivar o Activar */}
+    {sector.estaActivo ? (
+        <Button
+          variant="danger"
+          size="sm"
+          onClick={() => confirmarDesactivar(sector.id)}
+        >
+          🗑️ Desactivar
+        </Button>
+    ) : (
+        <Button
+          variant="success"
+          size="sm"
+          onClick={() => confirmarActivar(sector.id)}
+        >
+          ✅ Activar
+        </Button>
+    )}
+  </div>
+</td>
+
 const Sectores = () => {
   const [sectores, setSectores] = useState([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
