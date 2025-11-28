@@ -1,5 +1,5 @@
 import { Navbar, Container, Nav, Button } from "react-bootstrap";
-import { NavLink, useNavigate } from "react-router"; 
+import { NavLink, Link, useNavigate } from "react-router"; 
 import { logoutUser } from "../../utils/authAPI"; 
 
 const Menu = ({ usuarioLogueado, setUsuarioLogueado }) => {
@@ -59,12 +59,12 @@ const Menu = ({ usuarioLogueado, setUsuarioLogueado }) => {
             ) : (
               // Si no está logueado, mostramos los enlaces a Login y Registro
               <>
-                <NavLink className="nav-link" to="/login">
+                <Link className="nav-link" to="/login">
                   Login
-                </NavLink>
-                <NavLink className="nav-link" to="/register">
+                </Link>
+                <Link className="nav-link" to="/register">
                   Registro
-                </NavLink>
+                </Link>
               </>
             )}
           </Nav>
